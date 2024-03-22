@@ -32,3 +32,11 @@ This repository follows the following conventions.
 | 🔀 | :twisted_rightwards_arrows | Merge branches |
 | 💡 | :bulb | Add/modify comments |
 | 🗃 | :card_file_box | Database-related changes |
+
+
+제목은 50글자 이내로 작성한다.
+첫글자는 대문자로 작성한다.
+마침표 및 특수기호는 사용하지 않는다.
+영문으로 작성하는 경우 동사(원형)을 가장 앞에 명령어로 작성한다.
+과거시제는 사용하지 않는다.
+간결하고 요점적으로 즉, 개조식 구문으로 작성한다.
