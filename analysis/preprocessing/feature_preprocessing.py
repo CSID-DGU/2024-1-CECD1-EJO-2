@@ -20,6 +20,8 @@ selector = SelectFromModel(forest, prefit=True)
 X_important = selector.transform(X)
 
 important_features = X.columns[selector.get_support()]
+important_features_str = "\n".join(important_features.values)
+print(f'Important features:\n{important_features_str}')
 
 smote = SMOTE(random_state=42)
 X_smoted, y_smoted = smote.fit_resample(X_important, y)
