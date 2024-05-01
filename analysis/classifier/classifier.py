@@ -74,7 +74,7 @@ class URLClassifier:
 
     def train_model(self):
         print("Training model...")
-        self.clf = RandomForestClassifier(class_weight='balanced')  # 가중치 부여
+        self.clf = RandomForestClassifier(class_weight='balanced') 
         self.clf.fit(self.X_train, self.y_train)
         print("Model training completed.")
 
