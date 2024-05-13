@@ -27,8 +27,6 @@ class Preprocessing:
     def url_preprocessing(self):
         self.url['label'] = self.url['type'].map(malicious_translation)
         self.url['token_ids'] = self.url['url'].apply(self.tokenization)
-        # self.url['url_string'] = self.url['token_ids'].apply(lambda x: '/'.join(map(str, x[0])))
-        # self.url.drop(columns=['url', 'type', 'token_ids'], inplace=True)
         self.url.drop(columns=['url', 'type'], inplace=True)
         self.url.to_csv('data/url_ids.csv', index=False)
 
@@ -38,8 +36,6 @@ class Preprocessing:
 
         sm = SMOTE(random_state=42)
         X_smoted, y_smoted = sm.fit_resample(X, y)
-
-        print('SMOTE 적용 완료')
 
         forest = RandomForestClassifier(n_estimators=100, random_state=42)
         forest.fit(X_smoted, y_smoted)
