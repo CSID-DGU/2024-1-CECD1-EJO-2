@@ -1,16 +1,20 @@
 import pandas as pd
+import warnings
 
 from transformers import BertTokenizer
 from util import malicious_translation
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import SelectFromModel
-from sklearn.preprocessing import MinMaxScaler
 from imblearn.over_sampling import SMOTE
+
+
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 
 class Preprocessing:
     def __init__(self, url_path, feature_path):
         self.url = pd.read_csv(url_path)
         self.feature = pd.read_csv(feature_path)
+        self.feature.dropna(inplace=True)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
     def tokenization(self, string):
@@ -20,58 +24,50 @@ class Preprocessing:
         tokens_ids_list.append(token_ids)
         return tokens_ids_list
 
+    def url_preprocessing(self):
+        self.url['label'] = self.url['type'].map(malicious_translation)
+        self.url['token_ids'] = self.url['url'].apply(self.tokenization)
+        self.url.drop(columns=['url', 'type'], inplace=True)
+        self.url.to_csv('data/url_ids.csv', index=False)
+
     def feature_selection(self):
         X = self.feature.drop(columns=['phishing'], axis=1)
         y = self.feature['phishing']
 
-        forest = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
-        forest.fit(X, y)
+        sm = SMOTE(random_state=42)
+        X_smoted, y_smoted = sm.fit_resample(X, y)
 
-        forest.feature_names_in_ = X.columns.tolist()
+        forest = RandomForestClassifier(n_estimators=100, random_state=42)
+        forest.fit(X_smoted, y_smoted)
 
-        selector = SelectFromModel(forest, prefit=True)
-        X_important = selector.transform(X)
+        feature_importances = pd.Series(forest.feature_importances_, index=X_smoted.columns)
+        important_features = feature_importances[feature_importances > 0.009]
 
-        important_features = X.columns[selector.get_support()]
-        return X_important, y, important_features
+        X_train_important = X_smoted[important_features.index]
 
-    def feature_argumentation(self, X_important, y):
-        smote = SMOTE(random_state=42)
-        X_smoted, y_smoted = smote.fit_resample(X_important, y)
-        return X_smoted
+        def feature_normalization(value):
+            if isinstance(value, float) and value.is_integer():
+                return str(int(value))
+            return str(value)
 
-    def feature_normalization(self, X_smoted):
-        scaler = MinMaxScaler()
-        X_normalized = scaler.fit_transform(X_smoted)
-        return X_normalized
+        feature_strings = ["/".join(feature_normalization(value) for value in row)
+                           for index, row in X_train_important.iterrows()]
 
-    def feature_string(self, X_normalized, important_features):
-        X_string = pd.DataFrame(X_normalized, columns=important_features).astype(str)
-        feature_strings = X_string.apply(lambda x: '/'.join(x), axis=1)
-        df_feature_strings = pd.DataFrame(feature_strings, columns=['feature_string'])
-        return df_feature_strings
-
-    def url_preprocessing(self):
-        self.url['label'] = self.url['type'].map(malicious_translation)
-        self.url['token_ids'] = self.url['url'].apply(self.tokenization)
-        self.url['url_string'] = self.url['token_ids'].apply(lambda x: '/'.join(map(str, x[0])))
-        self.url.drop(columns=['url', 'type', 'token_ids'], inplace=True)
-        self.url.to_csv('data/url_data.csv', index=False)
+        self.feature = pd.DataFrame({
+            'label': y_smoted,
+            'feature_string': feature_strings
+        })
 
     def feature_preprocessing(self):
-        X_importnat, y, important_features = self.feature_selection()
-        X_smoted = self.feature_argumentation(X_importnat, y)
-        X_normalized = self.feature_normalization(X_smoted)
-        feature_strings = self.feature_string(X_normalized, important_features)
-        self.feature['token_ids'] = feature_strings['feature_string'].apply(self.tokenization)
-        self.feature['feature_string'] = self.feature['token_ids'].apply(lambda x: '/'.join(map(str, x[0])))
-        self.feature = self.feature[['phishing', 'feature_string']]
-        self.feature.rename(columns={'phishing': 'label'}, inplace=True)
-        self.feature.to_csv('data/feature_data.csv', index=False)
+        self.feature_selection()
+        self.feature['token_idx'] = self.feature['feature_string'].apply(self.tokenization)
+        self.feature.drop(columns=['feature_string'], inplace=True)
+        self.feature.to_csv('data/feature_ids.csv', index=False)
 
     def preprocessing(self):
         self.url_preprocessing()
         self.feature_preprocessing()
+
 
 if __name__ == '__main__':
     url_path = 'data/malicious_phish.csv'
