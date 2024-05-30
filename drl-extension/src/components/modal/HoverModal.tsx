@@ -4,58 +4,46 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import PopupResult from '../popup/result/PopupResult';
+
 const HoverModal = () => {
-  const [isSearched, setIsSearched] = useState(false);
-  const [result, setResult] = useState<SearchResult | null>(null);
-
-  const [url, setUrl] = useState('');
-
-  useEffect(() => {
-    if (url != '') {
-      setIsSearched(true);
-      setResult(getSearchResult(url));
-      console.log('currentURL--', url);
-
-      setModalStyle({
-        display: 'flex',
-        left: `${clientX}px`,
-        top: `${clientY}px`,
-        zIndex: `999999`,
-      });
-    }
-  }, [url]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [clientX, setX] = useState(0);
   const [clientY, setY] = useState(0);
 
-  const [modalStyle, setModalStyle] = useState({ display: 'none', left: '0px', top: '0px', zIndex: '99999' });
+  useEffect(() => {
+    console.log(isModalOpen);
+  }, [isModalOpen]);
+
+  const links = document.querySelectorAll('a');
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     document.addEventListener('mousemove', event => {
       setX(event.clientX);
       setY(event.clientY);
     });
-  });
-
-  useEffect(() => {
-    const links = document.querySelectorAll('a');
 
     links.forEach(linkElement => {
       linkElement.addEventListener('mouseover', () => {
+        console.log('mouseover');
         setUrl(linkElement.href);
+        clearTimeout(timer);
+        setModalStyle(prevStyle => ({ ...prevStyle, opacity: 1, transition: 'opacity 0.2s' }));
       });
 
       linkElement.addEventListener('mouseleave', () => {
         console.log('mouseLeave');
-        timeoutId = setTimeout(() => {
+        setModalStyle(prevStyle => ({ ...prevStyle, opacity: 0, transition: 'opacity 2s' }));
+
+        console.log('1');
+        timer = setTimeout(() => {
           setModalStyle(prevStyle => ({
             ...prevStyle,
-            display: 'none',
+            visibility: 'hidden',
           }));
           setUrl('');
-        }, 1000); // 1초 뒤에 실행
-
-        setUrl('');
+          setIsModalOpen(false);
+        }, 2000);
       });
     });
 
@@ -64,14 +52,45 @@ const HoverModal = () => {
         linkElement.removeEventListener('mouseover', () => {});
         linkElement.removeEventListener('mouseleave', () => {});
       });
+      document.removeEventListener('mousemove', () => {});
     };
   }, []);
 
+  const [isSearched, setIsSearched] = useState(false);
+  const [result, setResult] = useState<SearchResult | null>(null);
+  const [url, setUrl] = useState('');
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      if (url !== '') {
+        setIsSearched(true);
+        setResult(getSearchResult(url));
+        console.log('currentURL--', url);
+
+        setModalStyle({
+          ...modalStyle,
+          opacity: 1,
+          visibility: 'visible',
+          left: `${clientX}px`,
+          top: `${clientY}px`,
+        });
+        setIsModalOpen(true);
+      }
+    }
+  }, [url]);
+
+  const [modalStyle, setModalStyle] = useState<React.CSSProperties>({
+    opacity: 1,
+    transition: 'opacity 0.2s',
+    visibility: 'hidden',
+    left: '0px',
+    top: '0px',
+    zIndex: '99999',
+  });
+
   return (
-    <div>
-      <div style={{ ...modalStyle, position: 'fixed' }}>
-        <ModalWrapper>{PopupResult(getSearchResult(url))}</ModalWrapper>
-      </div>
+    <div style={{ ...modalStyle, position: 'fixed' }}>
+      <ModalWrapper>{PopupResult(getSearchResult(url))}</ModalWrapper>
     </div>
   );
 };
@@ -79,7 +98,6 @@ const HoverModal = () => {
 const ModalWrapper = styled.div`
   width: 320px;
   padding: 2rem 1.25rem;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;

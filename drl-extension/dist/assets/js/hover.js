@@ -76,47 +76,38 @@ const DescriptionLabel = ut.div`
   }
 `;
 const HoverModal = () => {
-  const [isSearched, setIsSearched] = reactExports.useState(false);
-  const [result, setResult] = reactExports.useState(null);
-  const [url, setUrl] = reactExports.useState("");
-  reactExports.useEffect(() => {
-    if (url != "") {
-      setIsSearched(true);
-      setResult(getSearchResult(url));
-      console.log("currentURL--", url);
-      setModalStyle({
-        display: "flex",
-        left: `${clientX}px`,
-        top: `${clientY}px`,
-        zIndex: `999999`
-      });
-    }
-  }, [url]);
+  const [isModalOpen, setIsModalOpen] = reactExports.useState(false);
   const [clientX, setX] = reactExports.useState(0);
   const [clientY, setY] = reactExports.useState(0);
-  const [modalStyle, setModalStyle] = reactExports.useState({ display: "none", left: "0px", top: "0px", zIndex: "99999" });
   reactExports.useEffect(() => {
+    console.log(isModalOpen);
+  }, [isModalOpen]);
+  const links = document.querySelectorAll("a");
+  reactExports.useEffect(() => {
+    let timer;
     document.addEventListener("mousemove", (event) => {
       setX(event.clientX);
       setY(event.clientY);
     });
-  });
-  reactExports.useEffect(() => {
-    const links = document.querySelectorAll("a");
     links.forEach((linkElement) => {
       linkElement.addEventListener("mouseover", () => {
+        console.log("mouseover");
         setUrl(linkElement.href);
+        clearTimeout(timer);
+        setModalStyle((prevStyle) => ({ ...prevStyle, opacity: 1, transition: "opacity 0.2s" }));
       });
       linkElement.addEventListener("mouseleave", () => {
         console.log("mouseLeave");
-        timeoutId = setTimeout(() => {
+        setModalStyle((prevStyle) => ({ ...prevStyle, opacity: 0, transition: "opacity 2s" }));
+        console.log("1");
+        timer = setTimeout(() => {
           setModalStyle((prevStyle) => ({
             ...prevStyle,
-            display: "none"
+            visibility: "hidden"
           }));
           setUrl("");
-        }, 1e3);
-        setUrl("");
+          setIsModalOpen(false);
+        }, 2e3);
       });
     });
     return () => {
@@ -126,14 +117,43 @@ const HoverModal = () => {
         linkElement.removeEventListener("mouseleave", () => {
         });
       });
+      document.removeEventListener("mousemove", () => {
+      });
     };
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { ...modalStyle, position: "fixed" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ModalWrapper, { children: PopupResult(getSearchResult(url)) }) }) });
+  const [isSearched, setIsSearched] = reactExports.useState(false);
+  const [result, setResult] = reactExports.useState(null);
+  const [url, setUrl] = reactExports.useState("");
+  reactExports.useEffect(() => {
+    if (!isModalOpen) {
+      if (url !== "") {
+        setIsSearched(true);
+        setResult(getSearchResult(url));
+        console.log("currentURL--", url);
+        setModalStyle({
+          ...modalStyle,
+          opacity: 1,
+          visibility: "visible",
+          left: `${clientX}px`,
+          top: `${clientY}px`
+        });
+        setIsModalOpen(true);
+      }
+    }
+  }, [url]);
+  const [modalStyle, setModalStyle] = reactExports.useState({
+    opacity: 1,
+    transition: "opacity 0.2s",
+    visibility: "hidden",
+    left: "0px",
+    top: "0px",
+    zIndex: "99999"
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { ...modalStyle, position: "fixed" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ModalWrapper, { children: PopupResult(getSearchResult(url)) }) });
 };
 const ModalWrapper = ut.div`
   width: 320px;
   padding: 2rem 1.25rem;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
