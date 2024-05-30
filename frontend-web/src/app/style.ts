@@ -35,12 +35,13 @@ export const Text = styled.p`
     text-align: center;
     line-height: 1.5;
     margin: 12px 0 40px 0;
+    text-align: start;
 `;
 
 export const ReportWrapper = styled.div`
     position: relative;
     width: 100%;
-    height: 40%;
+    height: auto;
     margin-top: 120px;
     background-color: ${theme.colors.lightGrayWrapper};
     padding: 30px;
