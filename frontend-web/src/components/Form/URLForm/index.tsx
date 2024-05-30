@@ -5,6 +5,7 @@ import { useGetUrl } from '@/hooks/useGetUrl';
 import { useState } from 'react';
 import FormSubmitButton from '@/components/Button/FormSubmitButton';
 import * as Styled from './style';
+import URLResultDisplay from '@/components/URLResultDisplay';
 
 export default function Form() {
   const [url, setUrl] = useState('');
@@ -18,9 +19,6 @@ export default function Form() {
     setUrl(data.url);
   };
 
-  if (isLoading) return <>로딩중...</>;
-  if (error) return <>에러 발생</>;
-  if (data) console.log('Fetched data:', data);
   return (
     <>
       <FormProvider {...methods}>
@@ -37,6 +35,7 @@ export default function Form() {
           </Styled.InputWrapper>
         </FormComponent>
       </FormProvider>
+      <URLResultDisplay isLoading={isLoading} error={error} data={data} />
     </>
   );
 }
