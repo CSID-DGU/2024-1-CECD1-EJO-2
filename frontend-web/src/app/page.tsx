@@ -23,6 +23,9 @@ export default function Home() {
                 </Styled.Text>
                 <Styled.ReportWrapper>
                     <ReportForm />
+                    <Styled.Text>
+                    {'신고를 하기 전 읽어주세요! \n 신고에 대한 공지사항. \n 신고에 대한 공지사항. \n'}
+                    </Styled.Text>
                 </Styled.ReportWrapper>
             </PageLayout>
         </>

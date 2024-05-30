@@ -7,7 +7,7 @@ export const Form = styled.form<{ alignItems?: string }>`
   flex-direction: column;
   width: 100%;
   position: relative;
-  align-items: ${props => props.alignItems || 'center'};
+  align-items: center;
 `;
 
 export const Input = styled.input<IFormInputStyleProps>`
@@ -28,6 +28,7 @@ export const Label = styled.label`
   font-size: 17px;
   font-weight: 400;
   color: ${theme.colors.title1};
+  margin: 20px 0;
 `;
 
 export const Text = styled.p``;
