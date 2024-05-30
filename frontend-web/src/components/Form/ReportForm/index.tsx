@@ -2,7 +2,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FormComponent } from '..';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import theme from '../../../theme';
+import * as Styled from './style';
+import FormSubmitButton from '@/components/Button/FormSubmitButton';
+import { usePostReportUrl } from '@/hooks/usePostReportUrl';
 
 interface IReportFormFields {
   reportOption: string;
@@ -34,22 +36,22 @@ export default function ReportForm() {
     }
   };
 
-  // 모든 필수 입력 필드의 유효성을 검사
-  const isFormValid = methods.formState.isValid;
-
   return (
     <>
       <FormProvider {...methods}>
         <FormComponent>
           <FormComponent.Label htmlFor="reportOption">악성 URL 신고하기</FormComponent.Label>
-          <FormComponent.Input
-            placeholder="의심되는 URL을 작성해주세요."
-            {...methods.register('url', {
-              required: '',
-            })}
-            borderColor="none"
-            width='70%'
-          />
+          <Styled.InputWrapper>
+            <FormComponent.Input
+              placeholder="의심되는 URL을 작성해주세요."
+              {...methods.register('url', {
+                required: '',
+              })}
+              borderColor="none"
+              width='70%'
+            />
+            <FormSubmitButton />
+          </Styled.InputWrapper>
         </FormComponent>
       </FormProvider>
     </>

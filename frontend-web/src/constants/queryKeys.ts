@@ -3,7 +3,7 @@ import { TUrl } from "@/types/url";
 
 export const getUrlQueryKey = (url: string) => {
     return {
-        queryKey: ['urlInfo'],
+        queryKey: ['urlInfo', url],
         queryFn: async () => (await getUrl(url)),
     }
 }
