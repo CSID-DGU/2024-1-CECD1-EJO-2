@@ -9,7 +9,7 @@ export default function Home() {
 
     return (
         <>
-            <PageLayout overflowY="auto">
+            <PageLayout>
                 <Styled.Title>
                     악성 URL 검색
                 </Styled.Title>
