@@ -1,4 +1,3 @@
-import { TUrl } from '@/types/url';
 import { instance } from './axios';
 
 export const getUrl = async (url: string) => {
