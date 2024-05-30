@@ -33,9 +33,10 @@ bert_classifier = BertClassifier(model_ref)
 svc = bentoml.Service("bert_classifier_service")
 
 
-@svc.api(input=Text(), output=JSON())
-def classify(input_text):
-    prediction = bert_classifier.predict(input_text)
+@svc.api(input=JSON(), output=JSON())
+def classify(input_data):
+    url = input_data['url']
+    prediction = bert_classifier.predict(url)
     return {"prediction": prediction}
 
 
