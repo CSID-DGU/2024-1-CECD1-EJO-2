@@ -1,4 +1,5 @@
 import StyledComponentsRegistry from '@/lib/registry'
+import QueryClientContext from '@/context/queryClientProvider'
 
 export default function RootLayout({
   children,
@@ -8,7 +9,11 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <QueryClientContext>
+          <StyledComponentsRegistry>
+            {children}
+          </StyledComponentsRegistry>
+        </QueryClientContext>
       </body>
     </html>
   )
