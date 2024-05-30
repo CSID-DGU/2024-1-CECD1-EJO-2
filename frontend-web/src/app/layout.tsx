@@ -1,6 +1,6 @@
 import StyledComponentsRegistry from '@/lib/registry'
 import QueryClientContext from '@/context/queryClientProvider'
-import { GlobalStyle } from '@/style'
+
 
 export default function RootLayout({
   children,
@@ -15,7 +15,6 @@ export default function RootLayout({
             {children}
           </StyledComponentsRegistry>
         </QueryClientContext>
-      </body>
     </html>
   )
 }

@@ -14,5 +14,5 @@ export default function PageLayout({ children }: IPageLayout) {
         <NavBar />
       </Style.Wrapper>
     </Style.Layout>
-  );
+  )
 }

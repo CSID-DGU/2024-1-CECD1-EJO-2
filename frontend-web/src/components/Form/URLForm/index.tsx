@@ -36,6 +36,15 @@ export default function Form() {
         </FormComponent>
       </FormProvider>
       <URLResultDisplay isLoading={isLoading} error={error} data={data} />
+          <FormComponent.Input
+            placeholder="의심되는 URL을 검색해보세요."
+            {...methods.register('url', {
+              required: '',
+            })}
+            borderColor={theme.colors.formBorder}
+          />
+        </FormComponent>
+      </FormProvider>
     </>
   );
 }
