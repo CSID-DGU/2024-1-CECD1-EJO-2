@@ -25,7 +25,6 @@ class BertClassifier:
         return predictions.item()
 
 
-# 모델 로드 시 CPU로 강제 설정
 model_ref = bentoml.transformers.get("malicious-url-classifier:latest")
 model_runner = model_ref.to_runner()
 
