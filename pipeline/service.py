@@ -1,11 +1,11 @@
 import bentoml
-from bentoml.io import JSON, Text
+from bentoml.io import JSON
 import torch
 
 
 class BertClassifier:
     def __init__(self, model_ref):
-        self.model = model_ref.to_runner()
+        self.model_runner = model_ref.to_runner()
         self.tokenizer = model_ref.custom_objects['tokenizer']
 
     def preprocess(self, url):
@@ -16,32 +16,29 @@ class BertClassifier:
         token_type_ids = torch.zeros_like(input_ids)
         return input_ids, attention_mask, token_type_ids
 
-    def predict(self, url):
+    async def predict(self, url):
         input_ids, attention_mask, token_type_ids = self.preprocess(url)
-        outputs = self.model(input_ids, attention_mask, token_type_ids)
+        outputs = await self.model_runner.async_run(input_ids, attention_mask, token_type_ids)
         logits = outputs[0]
         predictions = torch.argmax(logits, dim=1)
         print(predictions.item())
         return predictions.item()
 
 
+# 모델 로드 시 CPU로 강제 설정
 model_ref = bentoml.transformers.get("malicious-url-classifier:latest")
 model_runner = model_ref.to_runner()
 
 bert_classifier = BertClassifier(model_ref)
 
-svc = bentoml.Service("bert_classifier_service")
-
+svc = bentoml.Service("bert_classifier_service", runners=[model_runner])
 
 @svc.api(input=JSON(), output=JSON())
-def classify(input_data):
+async def classify(input_data):
     url = input_data['url']
-    prediction = bert_classifier.predict(url)
+    prediction = await bert_classifier.predict(url)
     return {"prediction": prediction}
-
 
 if __name__ == "__main__":
     from bentoml.server import serve
-
-    model_runner.init_local()
     serve(svc)
