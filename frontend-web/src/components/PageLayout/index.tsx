@@ -4,15 +4,19 @@ import NavBar from '../NavBar';
 
 export interface IPageLayout {
   children: React.ReactNode;
+  title?: string;
+  overflowY?: string;
 }
 
-export default function PageLayout({ children }: IPageLayout) {
+export default function PageLayout({ children, title, overflowY }: IPageLayout) {
   return (
-    <Style.Layout>
-      <Style.Wrapper>
-        {children}
-        <NavBar />
-      </Style.Wrapper>
-    </Style.Layout>
+    <>
+      <Style.Layout overflowY={overflowY}>
+        <Style.Wrapper>
+          {children}
+          <NavBar title={title} />
+        </Style.Wrapper>
+      </Style.Layout>
+    </>
   );
 }

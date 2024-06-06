@@ -6,7 +6,6 @@ export const NavBar = styled.div`
   align-items: center;
   padding: 0 20px;
   width: 100%;
-  box-sizing: border-box;
   height: 52px;
   background-color: #3c96e8;
   z-index: 1;

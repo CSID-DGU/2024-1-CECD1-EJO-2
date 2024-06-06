@@ -15,9 +15,9 @@ export interface IFormInputStyleProps {
   borderColor?: string;
 }
 
-function FormComponent({ children }: Props) {
+function FormComponent({ children, alignItems }: Props) {
   const methods = useFormContext();
-  return <Styled.Form onSubmit={methods.handleSubmit(data => console.log(data))}>
+  return <Styled.Form alignItems={alignItems} onSubmit={methods.handleSubmit(data => console.log(data))}>
     {children}
   </Styled.Form>;}
 
