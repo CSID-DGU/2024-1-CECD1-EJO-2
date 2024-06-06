@@ -1,6 +1,6 @@
 // use client
 
-import { ButtonProps } from '../../types/button';
+import { ButtonProps } from '@/types/button';
 import * as Styled from './style';
 
 export default function Button(props: ButtonProps) {
