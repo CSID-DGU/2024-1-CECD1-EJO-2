@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const instance = axios.create({
-  baseURL: '', //TODO: 추가하기
+  baseURL: 'https://api.defend-url.site',
   headers: {
   },
 });
