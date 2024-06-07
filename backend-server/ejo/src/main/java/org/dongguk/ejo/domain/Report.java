@@ -20,8 +20,12 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(name = "url", columnDefinition = "TEXT")
     private String url;
 
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private EType type;
 
     private LocalDateTime createdAt;

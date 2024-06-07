@@ -24,11 +24,13 @@ public class UrlService {
     @Value("${ai-server-url}")
     private String aiServerUrl;
 
+    private static final String prediction = "prediction";
+
     @Transactional
     public ValidationResultDto validateUrl(String url) {
         return urlRepository.findByUrl(url)
                 .map(findUrl -> ValidationResultDto.builder()
-                        .isMalicious(true)
+                        .isMalicious(findUrl.getIsMalicious())
                         .description(findUrl.getType().getName())
                         .build())
                 .orElseGet(() -> {
@@ -37,16 +39,17 @@ public class UrlService {
                     requestBody.put("url", url);
 
                     AiServerResponse aiServerResponse = AiServerResponse.builder()
-                            .prediction(restTemplateUtil.sendPostRequest(aiServerUrl, requestBody).getAsString("prediction"))
+                            .prediction(restTemplateUtil.sendPostRequest(aiServerUrl, requestBody).getAsString(prediction))
                             .build();
 
-                    urlRepository.save(Url.builder()
+
+                    Url newUrl = urlRepository.save(Url.builder()
                             .url(url)
                             .type(EType.valueOf(aiServerResponse.prediction().toUpperCase()))
                             .build());
 
                     return ValidationResultDto.builder()
-                            .isMalicious(false)
+                            .isMalicious(newUrl.getIsMalicious())
                             .description(aiServerResponse.prediction())
                             .build();
                 });

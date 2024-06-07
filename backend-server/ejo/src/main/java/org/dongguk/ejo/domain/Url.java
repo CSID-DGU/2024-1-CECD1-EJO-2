@@ -20,17 +20,25 @@ public class Url {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(name = "url", columnDefinition = "TEXT")
     private String url;
 
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private EType type;
 
     private LocalDateTime createdAt;
+
+    @Column(name = "is_malicious")
+    private Boolean isMalicious;
 
     @Builder
     public Url(Long id, String url, EType type) {
         this.id = id;
         this.url = url;
         this.type = type;
+        this.isMalicious = (type != EType.BENIGN);
         this.createdAt = LocalDateTime.now();
     }
 }
