@@ -20,6 +20,8 @@ public class Url {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(name = "url", columnDefinition = "TEXT") 
     private String url;
 
     private EType type;
