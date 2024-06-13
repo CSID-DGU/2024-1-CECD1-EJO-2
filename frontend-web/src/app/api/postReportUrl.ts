@@ -1,12 +1,12 @@
 import { isAxiosError } from 'axios';
 import { instance } from './axios';
-import { TUrl } from '@/types/url';
+import { TReportFormFields } from '@/types/url';
 
-export const postReportUrl = async (urlData: TUrl) => {
+export const postReportUrl = async (urlData: TReportFormFields) => {
     try {
         const response = await instance.post(`/api/report`, {
             URL: urlData.url,
-            type: urlData.type
+            type: urlData.reportOption
         });
         return response;
     } catch (error) {
