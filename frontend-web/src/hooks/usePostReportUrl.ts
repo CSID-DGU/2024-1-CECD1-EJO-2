@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { postReportUrl } from '@/app/api/postReportUrl';
-import { TUrl } from '@/types/url';
+import { TReportFormFields } from '@/types/url';
 
 export const usePostReportUrl = () => {
     return useMutation({
-        mutationFn: (urlData: TUrl) => postReportUrl(urlData),
+        mutationFn: (urlData: TReportFormFields) => postReportUrl(urlData),
     });
 };
