@@ -19,12 +19,12 @@ export default function Home() {
                 </Styled.Discription>
                 <URLForm/>
                 <Styled.Text>
-                    지금까지 1,400,000번의 겁색이 있었어요.
+                    지금까지 1,400,000번의 검색이 있었어요.
                 </Styled.Text>
                 <Styled.ReportWrapper>
                     <ReportForm />
                     <Styled.Text>
-                    {'신고를 하기 전 읽어주세요! \n 신고에 대한 공지사항. \n 신고에 대한 공지사항. \n'}
+                    {''}
                     </Styled.Text>
                 </Styled.ReportWrapper>
             </PageLayout>
