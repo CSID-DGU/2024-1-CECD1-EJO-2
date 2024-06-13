@@ -5,7 +5,7 @@ import { TReportFormFields } from '@/types/url';
 export const postReportUrl = async (urlData: TReportFormFields) => {
     try {
         const response = await instance.post(`/api/report`, {
-            URL: urlData.url,
+            url: urlData.url,
             type: urlData.reportOption
         });
         return response;
