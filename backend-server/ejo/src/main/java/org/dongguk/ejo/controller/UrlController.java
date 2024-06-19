@@ -3,7 +3,6 @@ package org.dongguk.ejo.controller;
 import lombok.RequiredArgsConstructor;
 import org.dongguk.ejo.dto.common.ResponseDto;
 import org.dongguk.ejo.service.UrlService;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

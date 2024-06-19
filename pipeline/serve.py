@@ -7,7 +7,7 @@ import uvicorn
 
 class BertClassifier:
     def __init__(self, model_path):
-        self.model = BertForSequenceClassification.from_pretrained(model_path)
+        self.model = BertForSequenceClassification.from_pretrained(model_path, from_tf=False, local_files_only=True)
         self.model.eval()
         self.tokenizer = BertTokenizer.from_pretrained("bert-base-cased")
         self.device = torch.device("cpu")
@@ -41,7 +41,7 @@ class BertClassifier:
 
 app = FastAPI()
 
-bert_classifier = BertClassifier("./model/fine_tuned")
+bert_classifier = BertClassifier("./model")
 
 
 class URLInput(BaseModel):
