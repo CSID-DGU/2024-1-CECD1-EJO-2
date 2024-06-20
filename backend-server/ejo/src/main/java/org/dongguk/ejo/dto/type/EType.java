@@ -15,13 +15,22 @@ public enum EType {
     private final Integer code;
     private final String name;
 
-    public static EType of(Integer code) {
+//    public static EType of(Integer code) {
+//        for (EType type : values()) {
+//            if (type.code.equals(code)) {
+//                return type;
+//            }
+//        }
+//        throw new IllegalArgumentException("Invalid code: " + code);
+//    }
+
+    public static EType of(String name) {
         for (EType type : values()) {
-            if (type.code.equals(code)) {
+            if (type.name.equals(name)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Invalid code: " + code);
+        throw new IllegalArgumentException("Invalid name: " + name);
     }
 
 

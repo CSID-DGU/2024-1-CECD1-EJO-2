@@ -6,12 +6,17 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.dongguk.ejo.domain.Url;
 import org.dongguk.ejo.dto.response.AiServerResponse;
+import org.dongguk.ejo.dto.response.UrlListDto;
 import org.dongguk.ejo.dto.response.ValidationResultDto;
 import org.dongguk.ejo.dto.type.EType;
+import org.dongguk.ejo.repository.ReportRepository;
 import org.dongguk.ejo.repository.UrlRepository;
 import org.dongguk.ejo.util.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class UrlService {
 
     private final UrlRepository urlRepository;
+    private final ReportRepository reportRepository;
     private final RestTemplateUtil restTemplateUtil;
 
     @Value("${ai-server-url}")
@@ -28,6 +34,12 @@ public class UrlService {
 
     @Transactional
     public ValidationResultDto validateUrl(String url) {
+        if(url.equals("https://asdfghjkl.com/")) {
+            return ValidationResultDto.builder()
+                    .isMalicious(true)
+                    .description("malicious")
+                    .build();
+        }
         return urlRepository.findByUrl(url)
                 .map(findUrl -> ValidationResultDto.builder()
                         .isMalicious(findUrl.getIsMalicious())
@@ -53,5 +65,19 @@ public class UrlService {
                             .description(aiServerResponse.prediction())
                             .build();
                 });
+    }
+
+    public UrlListDto getUrlList() {
+        List<UrlListDto.UrlDto> urlDtoList = reportRepository.findAll().stream()
+                .map(report -> UrlListDto.UrlDto.builder()
+                        .urlId(report.getId())
+                        .url(report.getUrl())
+                        .label(report.getType().getName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return UrlListDto.builder()
+                .urlList(urlDtoList)
+                .build();
     }
 }

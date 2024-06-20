@@ -15,10 +15,18 @@ public class UrlController {
 
     private final UrlService urlService;
 
+    // 1.1 URL 유효성 검사
     @GetMapping("/url")
     public ResponseDto<?> validateUrl(@RequestParam("url") String url) {
 
         return ResponseDto.ok(urlService.validateUrl(url));
     }
+
+    // 1.3 URL 정보 조회
+    @GetMapping("/url-list")
+    public ResponseDto<?> getUrlList() {
+        return ResponseDto.ok(urlService.getUrlList());
+    }
+
 
 }

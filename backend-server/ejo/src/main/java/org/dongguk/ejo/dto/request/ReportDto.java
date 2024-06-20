@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record ReportDto(
         String url,
-        Integer Type
+        // Phishing, Defacement, Malware
+        String type
 ) {
 }
