@@ -37,6 +37,7 @@ export default function Login() {
             />
             <FormComponent.Input
               placeholder="Password"
+              type="password"
               {...methods.register('password', {
                 required: 'Password를 입력해주세요.',
               })}

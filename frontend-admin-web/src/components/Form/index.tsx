@@ -21,9 +21,9 @@ function FormComponent({ children }: Props) {
     {children}
   </Styled.Form>;}
 
-function FormInput({ name, placeholder, ...formInputStyleProps }: { name: string; placeholder: string; } & IFormInputStyleProps) {
+function FormInput({ type, name, placeholder, ...formInputStyleProps }: { type?: string; name: string; placeholder: string; } & IFormInputStyleProps) {
   const { register } = useFormContext();
-  return <Styled.Input {...register(name, { required: true })} placeholder={placeholder} {...formInputStyleProps} />
+  return <Styled.Input {...register(name, { required: true })} type={type || 'text'}  placeholder={placeholder} {...formInputStyleProps} />
   ;
 }
 
