@@ -15,6 +15,7 @@ const options = [
   { value: 'Malware', label: '멀웨어' },
 ];
 
+/** 신고 폼 */
 export default function ReportForm() {
   const { mutate } = usePostReportUrl();
 
