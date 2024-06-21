@@ -1,12 +1,13 @@
 import ReactDOM from 'react-dom';
 
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
-import HoverModal from '@root/src/components/modal/HoverModal';
+import HoverCountdown from '@root/src/components/modal/HoverCountdown';
 
 refreshOnUpdate('pages/content/injected/mouseover');
 
 const App = () => {
-  return <HoverModal />;
+  // return <HoverModal />;
+  return <HoverCountdown />;
 };
 
 const modalRoot = document.createElement('div');

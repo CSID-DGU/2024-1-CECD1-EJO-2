@@ -5,12 +5,16 @@ import DeclarationSelect from './DeclarationSelect';
 import DeclarationInput from './DeclarationInput';
 import DeclarationButton from './DeclarationButton';
 import { declarationOptions, declarationReasonToOption } from './DeclarationEnum';
+import { postReportUrl } from '@root/src/api/postDeclarationURL';
+
+import icon_not_dangerouse from '../icon/not_dangerous.svg';
 
 /**
  *
  * @returns 신고 URL과 사유를 입력하는 폼입니다.
  */
 const DeclarationForm = () => {
+  const [isSearched, setIsSearched] = useState(false);
   const [submittedReason, setSubmittedReason] = useState('');
   const handlesubmittedReasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSubmittedReason(event.target.value);
@@ -28,20 +32,24 @@ const DeclarationForm = () => {
     } else {
       setIsAble(true);
     }
-  });
+  }, [submittedReason, submittedURL]);
 
   const handleSubmit = () => {
     if (submittedReason && submittedURL) {
-      alert(`신고 사유: ${declarationReasonToOption(submittedReason)}, URL: ${submittedURL}\n신고되었습니다.`);
+      postReportUrl(submittedURL, submittedReason);
 
-      setSubmittedReason('');
-      setSubmittedURL('');
+      setIsSearched(true);
     } else {
       alert('모든 필드를 입력해 주세요.');
     }
   };
 
-  return (
+  return isSearched ? (
+    <ResultTitle>
+      <img src={icon_not_dangerouse} alt="Safe site" />
+      <ResultLabel className="B1 not_dangerous">신고가 완료되었습니다.</ResultLabel>
+    </ResultTitle>
+  ) : (
     <InputFromWrapper>
       <DeclarationSelect
         value={submittedReason}
@@ -74,4 +82,37 @@ const InputWrapper = styled.div`
   gap: 0.5rem;
   align-items: center;
   width: 100%;
+`;
+
+const ResultTitle = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .img {
+    width: 20px;
+    height: 20px;
+  }
+  .dangerous {
+    color: #f64258;
+  }
+  .not_dangerous {
+    color: #343434;
+  }
+
+  .B1 {
+    letter-spacing: -0.5px;
+    font-family: Pretendard-Regular;
+    font-size: 16px;
+    line-height: calc(28 / 16);
+  }
+`;
+
+const ResultLabel = styled.div`
+  .B1 {
+    letter-spacing: -0.5px;
+    font-family: Pretendard-Regular;
+    font-size: 16px;
+    line-height: calc(28 / 16);
+  }
 `;

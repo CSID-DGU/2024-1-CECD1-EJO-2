@@ -1,4 +1,4 @@
 export interface SearchResult {
-  type: string;
+  is_malicious: boolean;
   description: string;
 }
